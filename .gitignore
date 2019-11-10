@@ -1,5 +1,5 @@
 build/
 dist/
 .git/
-output_files/
+*__pycache__/
 oci_metrics.egg-info/
