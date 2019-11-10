@@ -1,4 +1,5 @@
 build/
 dist/
-.git
+.git/
 output_files/
+oci_metrics.egg-info/

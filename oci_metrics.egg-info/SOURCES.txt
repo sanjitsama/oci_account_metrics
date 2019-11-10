@@ -1,0 +1,11 @@
+setup.py
+oci_metrics/__init__.py
+oci_metrics/__main__.py
+oci_metrics/classmodule.py
+oci_metrics/compartments.py
+oci_metrics/funcmodule.py
+oci_metrics.egg-info/PKG-INFO
+oci_metrics.egg-info/SOURCES.txt
+oci_metrics.egg-info/dependency_links.txt
+oci_metrics.egg-info/entry_points.txt
+oci_metrics.egg-info/top_level.txt

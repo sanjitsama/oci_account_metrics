@@ -1,0 +1,3 @@
+[console_scripts]
+oci_metrics = oci_metrics.__main__:main
+
