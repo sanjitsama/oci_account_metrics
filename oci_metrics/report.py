@@ -13,9 +13,9 @@ from datetime import datetime
 from twilio.rest import Client
 
 # Your Account SID from twilio.com/console
-account_sid = "AC4d4631961b9e0461b5bbaf6887630947"
+account_sid = os.environ.get('TWILIO_SID')
 # Your Auth Token from twilio.com/console
-auth_token = "f8a015f2769855e58794b2fb46126e08"
+auth_token = os.environ.get('TWILIO_TOKEN') 
 
 client = Client(account_sid, auth_token)
 
