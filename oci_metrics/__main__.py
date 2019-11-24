@@ -4,9 +4,15 @@ import os
 import oci
 import datetime
 import json
+import smtplib
+import email
 from oci_metrics.compartments import get_compartments, get_compartment_tree
-# from
-# from .funcmodule import my_function
+from oci_metrics import report
+#from oci_metrics import compartments, report
+
+# from oci_metrics.instances import get_all, get_by_compartment,
+# from oci_metrics.
+#
 
 
 def main():
@@ -29,6 +35,10 @@ def main():
             for c in next_comps:
                 cname = c["_name"]
                 print(f"Compartment {cname}: \n{c}\n\n")
+            report_dir = os.path.join(os.getcwd(), "output_files/")
+            for report_name in os.listdir(report_dir):
+                report.send_email(report_name)
+                report.send_text(report_name)
         break
 
 

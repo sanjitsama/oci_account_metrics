@@ -1,0 +1,256 @@
+[
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaajsp4artnup37kkagrumydtafklvfgskwxyi3vrf6mei7btz3pjlq",
+        "_defined_tags": {},
+        "_description": "Demos",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaazn5esro65yv2w46vqwzoawi2alhbmag6ai7osojlh5fuatfvl52q",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "AALBA",
+        "_time_created": "2019-11-07 17:05:49.317000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaa6ibzimdiuwkjtrompcilv2nl2frro6msv3w5rln7f2u3hxu2sjcq",
+        "_defined_tags": {},
+        "_description": "demo for michigan oracle use group",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaayliz5ocux7kbptdfi5yws7jxnskjct3ckecqrp3ctnjd7snf6cba",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "andrew-moug-demo",
+        "_time_created": "2019-10-28 01:31:00.145000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaaukhjb4kg4xfsu2zyjdxar25742tganhpj6t3tu2ddeudhckwvrla",
+        "_defined_tags": {},
+        "_description": "Apex-Email-local-user",
+        "_freeform_tags": {
+            "East3-Mark": "East3-Mark",
+            "ExpDate": "12/15/2019"
+        },
+        "_id": "ocid1.compartment.oc1..aaaaaaaahgdwlfwppd643l4ic45jlwqgvt4jjwxkfep7u2bdkqi22phkt4ia",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Apex-Email-local-user",
+        "_time_created": "2019-11-21 17:14:24.785000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaae7xxx3fiy6ynh76farefkje6beqvdregc64wtgzqkyzojvdqb6zq",
+        "_defined_tags": {},
+        "_description": "Lab compartment for ATAGHIYE resources",
+        "_freeform_tags": {
+            "Owner": "Anar Taghiyev"
+        },
+        "_id": "ocid1.compartment.oc1..aaaaaaaax6a57koyd56su3edqocvsve4nvzxtetsjoeoao2uaeg6dxpvzwsq",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "ATAGHIYE01",
+        "_time_created": "2019-10-08 21:15:01.306000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.tenancy.oc1..aaaaaaaafsvnqi3w2viowquzjfute7e26akiz7gtzawk7mtdvw7muen6gmzq",
+        "_defined_tags": {},
+        "_description": "Austin Hub",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaae7xxx3fiy6ynh76farefkje6beqvdregc64wtgzqkyzojvdqb6zq",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "AustinHub",
+        "_time_created": "2019-08-29 19:10:04.620000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.tenancy.oc1..aaaaaaaafsvnqi3w2viowquzjfute7e26akiz7gtzawk7mtdvw7muen6gmzq",
+        "_defined_tags": {},
+        "_description": "Burlington HUB Compartment",
+        "_freeform_tags": {
+            "willkea_manager": ""
+        },
+        "_id": "ocid1.compartment.oc1..aaaaaaaa2bo3bdysogszyby5rkqsdv3spisjqjtxqib6rvsbufnjlevidd6q",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Burlington",
+        "_time_created": "2019-04-03 15:28:51.706000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaaukhjb4kg4xfsu2zyjdxar25742tganhpj6t3tu2ddeudhckwvrla",
+        "_defined_tags": {
+            "RootNamespace": {
+                "CloseDate": "6/1/2020",
+                "Creator": "chris.carpenter@oracle.com",
+                "Team": "west",
+                "Uptime": "24"
+            }
+        },
+        "_description": "Chris Carpenter's compartment",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaatrs4o3bspmdt37aatsxj37ypdpighzfehf33zob3wy7nv45f6ijq",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Carpenter",
+        "_time_created": "2019-11-07 23:16:53.170000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaaukhjb4kg4xfsu2zyjdxar25742tganhpj6t3tu2ddeudhckwvrla",
+        "_defined_tags": {},
+        "_description": "Compartment for Chinmay",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaarqwgwfp5mords3ts3ntoihqxd3b6mjlvduvrtbqfwtrbvjlr2oua",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "CThakar",
+        "_time_created": "2019-09-25 16:13:33.329000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaaukhjb4kg4xfsu2zyjdxar25742tganhpj6t3tu2ddeudhckwvrla",
+        "_defined_tags": {},
+        "_description": "Compartment dedicated for DB systems",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaa7sfkcsvpouk2b4dnwbpthvfmn22gg57k34epfynsy3wlewspdqya",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Databases",
+        "_time_created": "2019-10-13 22:30:16.516000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.tenancy.oc1..aaaaaaaafsvnqi3w2viowquzjfute7e26akiz7gtzawk7mtdvw7muen6gmzq",
+        "_defined_tags": {},
+        "_description": "Build demos in this Development compartment",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaan6dqagbboogstyyqfluvxyyt4ipv5bw6jo6w7shhbplghsgfzl6q",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Development",
+        "_time_created": "2019-09-11 17:39:49.782000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaarqwgwfp5mords3ts3ntoihqxd3b6mjlvduvrtbqfwtrbvjlr2oua",
+        "_defined_tags": {},
+        "_description": "Compartment for E-Business Suite, PeopleSoft, and JD Edwards instances",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaawraivhnr7ymbzdibor4retmsj6fj5u6nue2veomnwy5vgvfi5boa",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "ebs-psft-jde",
+        "_time_created": "2019-11-04 19:40:41.316000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaak6pjkpexrzbusl6mis3mxtytkmajgeyfcpjfbwc663uvr4txs52q",
+        "_defined_tags": {},
+        "_description": "Enterprise-Austin-Hub",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaakvflperdul4jzhfjiopgbxwrzp2cqztaitorixiyptsxvuvbfozq",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Enterprise-Austin-Hub",
+        "_time_created": "2019-09-11 17:42:43.872000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaan6dqagbboogstyyqfluvxyyt4ipv5bw6jo6w7shhbplghsgfzl6q",
+        "_defined_tags": {},
+        "_description": "Enterprise-Austin-Hub",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaaukhjb4kg4xfsu2zyjdxar25742tganhpj6t3tu2ddeudhckwvrla",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Enterprise-Austin-Hub",
+        "_time_created": "2019-09-11 17:41:38.736000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaak6pjkpexrzbusl6mis3mxtytkmajgeyfcpjfbwc663uvr4txs52q",
+        "_defined_tags": {},
+        "_description": "Enterprise-Central",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaatqc23n7fvk6zdn35ldtxttw35dkrnl56pe5io4cr7tvzta23dugq",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Enterprise-Central",
+        "_time_created": "2019-09-11 17:42:32.635000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaan6dqagbboogstyyqfluvxyyt4ipv5bw6jo6w7shhbplghsgfzl6q",
+        "_defined_tags": {},
+        "_description": "Enterprise-Central",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaanegit4cgcqfe6tpsnxmit7ecqbk6tbna2zoy74yl5oicww53kdaa",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Enterprise-Central",
+        "_time_created": "2019-09-11 17:41:27.568000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaak6pjkpexrzbusl6mis3mxtytkmajgeyfcpjfbwc663uvr4txs52q",
+        "_defined_tags": {},
+        "_description": "Enterprise-East-1",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaayi7esndvj74l2omvov6y7euymsuljmyd3llu4wy2yhtsdhqykfka",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Enterprise-East-1",
+        "_time_created": "2019-09-11 17:41:59.686000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaan6dqagbboogstyyqfluvxyyt4ipv5bw6jo6w7shhbplghsgfzl6q",
+        "_defined_tags": {},
+        "_description": "Enterprise-East-1",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaa6ibzimdiuwkjtrompcilv2nl2frro6msv3w5rln7f2u3hxu2sjcq",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Enterprise-East-1",
+        "_time_created": "2019-09-11 17:40:53.766000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaak6pjkpexrzbusl6mis3mxtytkmajgeyfcpjfbwc663uvr4txs52q",
+        "_defined_tags": {},
+        "_description": "Enterprise-East-2",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaaugnmlnqnsddwqwasrza7mvk5snjgmcwrnz66oek6wnkfthcthk2a",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Enterprise-East-2",
+        "_time_created": "2019-09-11 17:42:12.422000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaan6dqagbboogstyyqfluvxyyt4ipv5bw6jo6w7shhbplghsgfzl6q",
+        "_defined_tags": {},
+        "_description": "Enterprise-East-2",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaamqkwpgxgcf2r2l5khz5e5oci7ywbuqy2jzebtgcziwukssdhqmhq",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Enterprise-East-2",
+        "_time_created": "2019-09-11 17:41:05.992000+00:00"
+    },
+    {
+        "_compartment_id": "ocid1.compartment.oc1..aaaaaaaak6pjkpexrzbusl6mis3mxtytkmajgeyfcpjfbwc663uvr4txs52q",
+        "_defined_tags": {},
+        "_description": "Enterprise-West",
+        "_freeform_tags": {},
+        "_id": "ocid1.compartment.oc1..aaaaaaaahact3tebblstyhshyccsiuhz2bxdj5l7jr2oubvn7jadoazhbbxq",
+        "_inactive_status": null,
+        "_is_accessible": null,
+        "_lifecycle_state": "ACTIVE",
+        "_name": "Enterprise-West",
+        "_time_created": "2019-09-11 17:42:22.228000+00:00"
+    }
+]
