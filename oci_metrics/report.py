@@ -1,86 +1,104 @@
-#! /usr/bin/python3
-import oci
-import json
+# python script for sending SMTP configuration with Oracle Cloud Infrastructure Email Delivery
 import os
 import smtplib
-from email.message import EmailMessage
-# Import the email modules we'll need
+import json
+import inspect
+from operator import itemgetter
+import email.utils
+from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
-from datetime import datetime
-from twilio.rest import Client
-
-# Your Account SID from twilio.com/console
-account_sid = os.environ.get('TWILIO_SID')
-# Your Auth Token from twilio.com/console
-auth_token = os.environ.get('TWILIO_TOKEN') 
-
-client = Client(account_sid, auth_token)
+from email.utils import COMMASPACE, formatdate, formataddr
 
 
-def get_report(filepath):
-    with open(filepath) as jsonfile:
-        data = json.load(jsonfile)
-        return data
+report_dir = os.path.join(os.getcwd(), "output_files/")
 
 
-def send_email(report_name):
-    sending_ts = datetime.now()
-    sub = "Here's my subject %s" % sending_ts.strftime('%Y-%m-%d %H:%M:%S')
-    msg = MIMEMultipart()
-    #fromaddr = 'nd.corc@gmail.com'
-    fromaddr = 'no-reply@example.com'
-    toaddr = 'nolan.corcoran@oracle.com'
-    msg['From'] = fromaddr
-    msg['To'] = toaddr
-    msg['Subject'] = sub
-    body = "This is a sample report email generated from the oci metrics script."
-    msg.attach(MIMEText(body, 'plain'))
-
-    report_dir = os.path.join(os.getcwd(), "output_files/")
-    report = open(report_dir + report_name, "rb")
-
-    # instance of MIMEBase and named as p
-    # To change the payload into encoded form
-    p = MIMEBase('application', 'octet-stream')
-    p.set_payload((report).read())
-
-    # encode into base64
-    encoders.encode_base64(p)
-
-    p.add_header('Content-Disposition',
-                 "attachment; filename= %s" % report_name)
-
-    # attach the instance 'p' to instance 'msg'
-    msg.attach(p)
-
-    #msg['From'] = 'no-reply@example.com'
-    slocal = smtplib.SMTP('localhost')
-    text = msg.as_string()
-    slocal.sendmail(fromaddr, toaddr, text)
-    slocal.quit()
-    return 0
+def tostr(var): return str(
+    [k for k, v in inspect.currentframe().f_back.f_locals.items() if v is var][0])
 
 
-def send_text(report_name):
-    message = client.messages.create(
-        to="+18326221587",
-        from_="+13462518204",
-        body="This is a sample report text generated from the oci metrics script...report name = " + report_name)
-    print(message.sid)
+class Report:
+    def __init__(self, config):
+        self.config = dict(config['DEFAULT'])
+        self.subject = "OCI Account Metrics Report"
+        self.body_text = ("Email Delivery Test\r\n"
+                          "This email was sent through the OCI Email Delivery SMTP "
+                          "Interface using the Python smtplib package.\nAttached is the report file."
+                          )
+        self.body_html = """
+            <html>
+                <head></head>
+                <body>
+                <h1>OCI Account Metrics Report</h1>
+                <p>This email was sent with Email Delivery using the
+                    <a href='https://www.python.org/'>Python</a>
+                    <a href='https://docs.python.org/3/library/smtplib.html'>
+                    smtplib</a> library.
+                </p>
+                <p>Attached is the report file.
+                </p>
+                </body>
+            </html>
+        """
+        self.msg = MIMEMultipart()
+
+    def compose_report(self):
+        sender, sendername = itemgetter(
+            'sender', 'sendername')(self.config)
+        # Create message container - the correct MIME type is multipart/alternative.
+        self.msg['From'] = formataddr((sendername, sender))
+        self.msg['Date'] = formatdate(localtime=True)
+        self.msg['Subject'] = self.subject
+        self.msg.attach(MIMEText(self.body_text, 'plain'))
+        self.msg.attach(MIMEText(self.body_html, 'html'))
+        for report_name in os.listdir(report_dir):
+            with open(report_dir + report_name, "rb") as rfile:
+                part = MIMEApplication(
+                    rfile.read(),
+                    Name=report_name
+                )
+            # After the file is closed
+            print(report_name)
+            part['Content-Disposition'] = 'attachment; filename="%s"' % report_name
+            self.msg.attach(part)
+
+    def publish_report(self):
+        username, password, sender, recipients, host, port = itemgetter(
+            'username', 'password', 'sender', 'recipients', 'host', 'port')(self.config)
+        for recipient in recipients.split(","):
+            self.msg['To'] = recipient
+            # Try to send the message.
+            try:
+                server = smtplib.SMTP(host, port)
+                server.ehlo()
+                server.starttls()
+                # smtplib docs recommend calling ehlo() before & after starttls()
+                server.ehlo()
+                server.login(username, password)
+                server.sendmail(sender, recipient, self.msg.as_string())
+                server.close()
+            # Display an error message if something goes wrong.
+            except Exception as e:
+                print("Error: ", e)
+            else:
+                print("Email successfully sent!")
 
 
-""" 
-    msg['From'] = 'nd.corc@gmail.com'
-    sgmail = smtplib.SMTP('smtp.gmail.com', 587)
-    sgmail.starttls()
-    sgmail.login("nd.corc@gmail.com", "Snickers123")
-
-    # Converts the Multipart msg into a string
-    text = msg.as_string()
-
-    # sending the mail
-    sgmail.sendmail(fromaddr, toaddr, text)
-    sgmail.quit() """
+"""
+# Try to send the message.
+try:
+    server = smtplib.SMTP(HOST, PORT)
+    server.ehlo()
+    server.starttls()
+    # smtplib docs recommend calling ehlo() before & after starttls()
+    server.ehlo()
+    server.login(USERNAME_SMTP, PASSWORD_SMTP)
+    server.sendmail(SENDER, RECIPIENT, msg.as_string())
+    server.close()
+# Display an error message if something goes wrong.
+except Exception as e:
+    print("Error: ", e)
+else:
+    print("Email successfully sent!")
+ """
