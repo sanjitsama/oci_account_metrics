@@ -7,7 +7,7 @@ from treelib import Node, Tree
 
 
 config_file = "/home/opc/.oci/config"
-
+#report_dir = "/home/opc/oci_metrics/report_dir"
 
 """ def backoff_hdlr(details):
     print("Backing off {wait:0.1f} seconds afters {tries} tries "
@@ -29,6 +29,7 @@ class Compartments:
         self.config = tenancy.config
         self.identity = tenancy.identity
         self.compute = tenancy.compute
+        self.report_dir = tenancy.report_dir
         self.availability_domains = get_availability_domains(
             self.identity, self.config["tenancy"])
         self.compartments = []
@@ -37,11 +38,10 @@ class Compartments:
 
     def get_all(self, current=None):
         comp_id = self.config["tenancy"] if current is None else current["_id"]
-        for ad in self.availability_domains:
-            self.get_instances(comp_id, ad)
+        """ for ad in self.availability_domains:
+            self.get_instances(comp_id, ad) """
         children = self.get_compartments(comp_id)
-        if len(children) is 0:
-            return
+        if len(children) is 0: return
         children = list(map(lambda curr: dict([(k, v) for (k, v) in curr.items(
         ) if (k != "attribute_map" and k != "swagger_types")]), children))
         for child in children:
@@ -62,9 +62,16 @@ class Compartments:
         ) if (k != "metadata" and k != "attribute_map" and k != "swagger_types")]), instances))
         self.instances.extend(instances)
 
-    def get_compartment_tree(self):
+    def get_compartment_tree(self, report_dir):
         self.compartment_tree.create_node(
             f"{self.config['tenancy_name']} (root)", self.config['tenancy'])
         for compartment in self.compartments:
             self.compartment_tree.create_node(
                 compartment["_name"], compartment["_id"], parent=compartment["_compartment_id"])
+        print(f"******************************************************")
+        print(f"**       {self.config['tenancy_name']} Compartment Layout        **")
+        print(f"******************************************************\n")
+        self.compartment_tree.show()
+        print("\n")
+        """ filename = f"{self.config['tenancy_name']}_compartment_tree.txt"
+        self.compartment_tree.save2file(f"{self.report_dir}/{filename}") """

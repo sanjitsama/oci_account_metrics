@@ -1,0 +1,64 @@
+orasenatdpltoci01 (root)
+├── AustinHub
+│   ├── ATAGHIYE01
+│   │   └── Lab-IdentityFederationSSO
+│   ├── SANDBOX
+│   │   ├── AALBA
+│   │   └── HandsOnOAC
+│   ├── TI
+│   └── goodCreditDemoCompartment
+├── Burlington
+├── Development
+│   ├── Enterprise-Austin-Hub
+│   │   ├── Apex-Email-local-user
+│   │   ├── BGuragain
+│   │   ├── CThakar
+│   │   │   └── ebs-psft-jde
+│   │   ├── Carpenter
+│   │   │   └── PGE
+│   │   ├── CaseyR
+│   │   ├── Databases
+│   │   ├── Huntington
+│   │   ├── JFliging
+│   │   ├── KMai
+│   │   ├── Kartik
+│   │   ├── Networking
+│   │   ├── PKruzel
+│   │   ├── PPavlov
+│   │   ├── SharedDemos
+│   │   │   └── Essbase
+│   │   └── VicramR
+│   ├── Enterprise-Central
+│   │   ├── Networking
+│   │   └── SharedDemos
+│   ├── Enterprise-East-1
+│   │   ├── Networking
+│   │   ├── SharedDemos
+│   │   └── andrew-moug-demo
+│   ├── Enterprise-East-2
+│   │   ├── Networking
+│   │   └── SharedDemos
+│   └── Enterprise-West
+│       ├── EugeneShih
+│       ├── Networking
+│       ├── SharedDemos
+│       │   └── sdhall
+│       ├── ThuymyTran
+│       └── sundeepdhall
+├── ManagedCompartmentForPaaS
+└── Production
+    ├── Enterprise-Austin-Hub
+    │   ├── Networking
+    │   └── SharedDemos
+    ├── Enterprise-Central
+    │   ├── Networking
+    │   └── SharedDemos
+    ├── Enterprise-East-1
+    │   ├── Networking
+    │   └── SharedDemos
+    ├── Enterprise-East-2
+    │   ├── Networking
+    │   └── SharedDemos
+    └── Enterprise-West
+        ├── Networking
+        └── SharedDemos
