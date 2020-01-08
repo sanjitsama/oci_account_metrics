@@ -2,5 +2,7 @@ build/
 dist/
 venv/
 .git/
+report_dir/
+output_files/
 *__pycache__/
 oci_metrics.egg-info/
