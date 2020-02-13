@@ -19,6 +19,9 @@
 from __future__ import print_function
 import oci
 import time
+import os
+import json
+from collections import Counter, defaultdict
 
 
 ##########################################################################
@@ -142,6 +145,7 @@ class ShowOCIService(object):
     C_IDENTITY_POLICIES = 'policies'
     C_IDENTITY_TENANCY = 'tenancy'
     C_IDENTITY_COMPARTMENTS = 'compartments'
+    C_IDENTITY_COMPARTMENT_TREE = 'compartment_tree'
     C_IDENTITY_REGIONS = 'regions'
     C_IDENTITY_PROVIDERS = 'providers'
     C_IDENTITY_DYNAMIC_GROUPS = 'dynamic_groups'
@@ -232,6 +236,9 @@ class ShowOCIService(object):
     C_LIMITS_SERVICES = "services"
     C_LIMITS_QUOTAS = "quotas"
 
+    # psm services
+    C_PSM_SERVICES = "psm_services"
+
     # Error flag and reboot migration
     error = 0
     warning = 0
@@ -301,6 +308,28 @@ class ShowOCIService(object):
     ]
 
     ##########################################################################
+    # PSM Services
+    ##########################################################################
+    psm_service_map = {
+        'integration': 'OICINST',
+        'analytics': 'AUTOANALYTICSINST',
+        'api_platform': 'APICSAUTO',
+        'blockchain': 'OABCSINST',
+        'cecs': 'CECSAUTO',
+        'dipc': 'DIPCINST',
+        'developer': 'DevServiceAppAUTO',
+        'digital_assistant': 'BotSaaSAuto',
+        'visual_builder': 'VBINST',
+        'java': 'jcs',
+        'management': 'OMCEXTERNAL',
+        'mobile': 'MobileStandard',
+        'soa': 'SOA',
+        'nosql': 'ANDC',
+        'event_hub': 'OEHPCS',
+        'big_data': 'BDCSCE'
+    }
+
+    ##########################################################################
     # Local Variables
     # data - hold the data data
     # flags - hold the extract flags
@@ -316,7 +345,7 @@ class ShowOCIService(object):
     #    flags parameters - Class ShowOCIFlags
     #
     ##########################################################################
-    def __init__(self, flags):
+    def __init__(self, flags, start_time, tenancy):
 
         if not isinstance(flags, ShowOCIFlags):
             raise TypeError("flags must be ShowOCIFlags class")
@@ -326,6 +355,9 @@ class ShowOCIService(object):
 
         # assign the flags variable
         self.flags = flags
+
+        self.start_time = start_time
+        self.tenancy = tenancy
 
         # if intance pricipals - generate signer from token or config
         if flags.use_instance_principals:
@@ -376,6 +408,12 @@ class ShowOCIService(object):
         return self.__load_data_main()
 
     ##########################################################################
+    # load_psm_data
+    ##########################################################################
+    def load_psm_service_data(self):
+        return self.__load_psm_data_main()
+
+    ##########################################################################
     # Print header centered
     ##########################################################################
     def print_header(self, name, category):
@@ -394,7 +432,7 @@ class ShowOCIService(object):
     ##########################################################################
     # return compartment data
     ##########################################################################
-    def get_compartment(self):
+    def get_compartments(self):
         return self.data[self.C_IDENTITY][self.C_IDENTITY_COMPARTMENTS]
 
     ##########################################################################
@@ -670,11 +708,49 @@ class ShowOCIService(object):
                     # load region into data
                     self.__load_oci_region_data(region_name)
 
+            self.__load_psm_service_data()
+
             return True
 
         except Exception as e:
             self.__print_error("__load_data_main: ", e)
             raise
+
+    def __load_psm_data_main(self):
+        try:
+            self.__load_psm_service_data()
+            return True
+        except Exception as e:
+            self.__print_error("__load_data_main: ", e)
+            raise
+
+    ##########################################################################
+    # run on gen1 paas (psm) instances
+    ##########################################################################
+    def __load_psm_service_data(self):
+        self.data[self.C_PSM_SERVICES] = {}
+        for k,v in self.psm_service_map.items():
+            self.__load_psm_service(k,v)       
+
+    def __load_psm_service(self, paas_name, paas_id):
+        stream = os.popen(f"psm {paas_id} services")
+        output = stream.read()
+        instances = json.loads(output)['services']
+
+        colList = [set(item.keys()) for item in list(instances.values())]
+        if not len(colList): return
+        try: colSet = set.intersection(*colList)
+        except Exception as e: return
+
+        psm_data = defaultdict(list)
+        for instance_name,instance_data in list(instances.items()):
+            psm_key = "default" if "edition" not in instance_data else instance_data["edition"]
+            filtered_data = dict((k, instance_data[k]) for k in list(colSet) if k in instance_data)
+            filtered_data["extract_date"] = self.start_time
+            filtered_data["tenancy"] = self.tenancy
+            psm_data[psm_key].append(filtered_data)
+
+        self.data[self.C_PSM_SERVICES][paas_name] = psm_data
 
     ##########################################################################
     # run on Region
@@ -2862,7 +2938,7 @@ class ShowOCIService(object):
                 auto_scaling.base_client.session.proxies = {'https': self.flags.proxy}
 
             # reference to compartments
-            compartments = self.get_compartment()
+            compartments = self.get_compartments()
 
             # add the key to the network if not exists
             self.__initialize_data_key(self.C_COMPUTE, self.C_COMPUTE_INST)
@@ -4051,7 +4127,7 @@ class ShowOCIService(object):
                 load_balancer.base_client.session.proxies = {'https': self.flags.proxy}
 
             # reference to compartments
-            compartments = self.get_compartment()
+            compartments = self.get_compartments()
 
             # add the key to the network if not exists
             self.__initialize_data_key(self.C_LB, self.C_LB_LOAD_BALANCERS)
@@ -4418,7 +4494,7 @@ class ShowOCIService(object):
                 object_storage.base_client.session.proxies = {'https': self.flags.proxy}
 
             # reference to compartments
-            compartments = self.get_compartment()
+            compartments = self.get_compartments()
 
             # add the key if not exists
             self.__initialize_data_key(self.C_OS, self.C_OS_BUCKETS)
@@ -4557,7 +4633,7 @@ class ShowOCIService(object):
                 orm.base_client.session.proxies = {'https': self.flags.proxy}
 
             # reference to compartments
-            compartments = self.get_compartment()
+            compartments = self.get_compartments()
 
             # add the key if not exists
             self.__initialize_data_key(self.C_ORM, self.C_ORM_STACKS)
@@ -4681,7 +4757,7 @@ class ShowOCIService(object):
                 email_client.base_client.session.proxies = {'https': self.flags.proxy}
 
             # reference to compartments
-            compartments = self.get_compartment()
+            compartments = self.get_compartments()
 
             # add the key if not exists
             self.__initialize_data_key(self.C_EMAIL, self.C_EMAIL_SENDERS)
@@ -4841,7 +4917,7 @@ class ShowOCIService(object):
                 virtual_network.base_client.session.proxies = {'https': self.flags.proxy}
 
             # reference to compartments
-            compartments = self.get_compartment()
+            compartments = self.get_compartments()
 
             # add the key if not exists
             self.__initialize_data_key(self.C_FILE_STORAGE, self.C_FILE_STORAGE_FILESYSTEMS)
@@ -5106,7 +5182,7 @@ class ShowOCIService(object):
                 virtual_network.base_client.session.proxies = {'https': self.flags.proxy}
 
             # reference to compartments
-            compartments = self.get_compartment()
+            compartments = self.get_compartments()
 
             # add the key if not exists
             self.__initialize_data_key(self.C_DATABASE, self.C_DATABASE_DBSYSTEMS)
@@ -5710,7 +5786,7 @@ class ShowOCIService(object):
                 container_client.base_client.session.proxies = {'https': self.flags.proxy}
 
             # reference to compartments
-            compartments = self.get_compartment()
+            compartments = self.get_compartments()
 
             # add the key if not exists
             self.__initialize_data_key(self.C_CONTAINER, self.C_CONTAINER_CLUSTERS)
@@ -5874,7 +5950,7 @@ class ShowOCIService(object):
                 stream_client.base_client.session.proxies = {'https': self.flags.proxy}
 
             # reference to compartments
-            compartments = self.get_compartment()
+            compartments = self.get_compartments()
 
             # add the key if not exists
             self.__initialize_data_key(self.C_STREAMS, self.C_STREAMS_STREAMS)
@@ -6091,7 +6167,7 @@ class ShowOCIService(object):
                 ons_dp_client.base_client.session.proxies = {'https': self.flags.proxy}
 
             # reference to compartments
-            compartments = self.get_compartment()
+            compartments = self.get_compartments()
 
             # add the key if not exists
             self.__initialize_data_key(self.C_MONITORING, self.C_MONITORING_ALARMS)
@@ -6342,7 +6418,7 @@ class ShowOCIService(object):
                 healthcheck_client.base_client.session.proxies = {'https': self.flags.proxy}
 
             # reference to compartments
-            compartments = self.get_compartment()
+            compartments = self.get_compartments()
 
             # add the key if not exists
             self.__initialize_data_key(self.C_EDGE, self.C_EDGE_HEALTHCHECK_PING)
@@ -6653,7 +6729,7 @@ class ShowOCIService(object):
             tenancy = self.get_tenancy()
 
             # reference to compartments
-            compartments = self.get_compartment()
+            compartments = self.get_compartments()
 
             # add the key if not exists
             self.__initialize_data_key(self.C_LIMITS, self.C_LIMITS_SERVICES)

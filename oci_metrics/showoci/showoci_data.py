@@ -27,17 +27,20 @@ class ShowOCIData(object):
     # OCI Processed data
     data = []
 
+    # PSM Processed data
+    psm_data = []
+
     ############################################
     # Init
     ############################################
-    def __init__(self, flags):
+    def __init__(self, flags, start_time, tenancy):
 
         # check if not instance fo ShowOCIFlags
         if not isinstance(flags, ShowOCIFlags):
             raise TypeError("flags must be Flags class")
 
         # initiate service object
-        self.service = ShowOCIService(flags)
+        self.service = ShowOCIService(flags, start_time, tenancy)
 
     ############################################
     # get service data
@@ -52,6 +55,13 @@ class ShowOCIData(object):
     def load_service_data(self):
 
         return self.service.load_service_data()
+
+    ############################################
+    # call service to load psm data
+    ############################################
+    def load_psm_service_data(self):
+
+        return self.service.load_psm_service_data()
 
     ##########################################################################
     # get_oci_main_data
@@ -99,12 +109,16 @@ class ShowOCIData(object):
                     if value or limits_data:
                         region_data = ({'type': "region", 'region': region_name, 'data': value, 'limits': limits_data})
                         self.data.append(region_data)
-
             # return the json data
+
             return self.data
 
         except Exception as e:
             raise Exception("Error in process_oci_data: " + str(e))
+
+
+    def process_psm_data(self):
+        return self.__get_psm_services_main()
 
     ##########################################################################
     # Print version
@@ -173,7 +187,7 @@ class ShowOCIData(object):
         try:
 
             # Loop on Compartments and call services
-            compartments = self.service.get_compartment()
+            compartments = self.service.get_compartments()
 
             # Loop on all relevant compartments
             print("\nProcessing...")
@@ -2470,4 +2484,16 @@ class ShowOCIData(object):
 
         except Exception as e:
             self.__print_error("__get_quotas_main", e)
+            pass
+
+    def __get_psm_services_main(self):
+        try:
+            psm_services = self.service.data[self.service.C_PSM_SERVICES]
+            
+            if psm_services:
+                return psm_services
+            return
+
+        except Exception as e:
+            self.__print_error("__get_psm_services_main", e)
             pass

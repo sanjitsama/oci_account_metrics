@@ -1895,12 +1895,13 @@ class ShowOCICSV(object):
     ############################################
     def __init__(self, start_time, tenancy, report_dir):
         self.start_time = start_time
-        self.workbook = xlsxwriter.Workbook(f"{report_dir}/{tenancy}_report.xlsx")
+        self.tenancy = tenancy
+        #self.workbook = xlsxwriter.Workbook(f"{report_dir}/{tenancy}_report.xlsx")
 
     ##########################################################################
     # generate xslx report
     ##########################################################################
-    def generate_worksheet(self, title, fields, rows):
+    """ def generate_worksheet(self, title, fields, rows):
         worksheet = self.workbook.add_worksheet(title)
         for i, v in enumerate(fields):
             worksheet.write(0, i, v)
@@ -1908,16 +1909,19 @@ class ShowOCICSV(object):
         for row in rows:
             ccount = 0
             #print(f"row={row}\n")
+            print(f"row.items = {row.items}")
             for k,v in row.items():
+                print(f"rcount = {rcount}\nccount = {ccount}\nv = {v}")
+                if type(v) is "string": v = str(v)
                 worksheet.write(rcount, ccount, v)
                 ccount += 1
-            rcount += 1
+            rcount += 1 """
 
 
     ##########################################################################
     # generate_csv
     ##########################################################################
-    def generate_csv(self, data, csv_file_header):
+    def generate_csv(self, data, psm_data, csv_file_header):
 
         self.csv_file_header = csv_file_header
         try:
@@ -1949,8 +1953,13 @@ class ShowOCICSV(object):
             self.__export_to_csv_file("load_balancer_listeners", self.csv_load_balancer)
             self.__export_to_csv_file("load_balancer_backendset", self.csv_load_balancer_bs)
             self.__export_to_csv_file("limits", self.csv_limits)
-            
-            self.workbook.close()
+
+            for pname, pdata in psm_data.items():
+                for e,edata in pdata.items():
+                    edition = e.lower() if len(pdata.keys()) > 1 or pname == "analytics" else None
+                    if pname.lower() == "java": print(f"e = {e.lower()}, edition = {edition}")
+                    self.__psm_to_csv_file(pname, edata, edition)
+            #self.workbook.close()
             print("")
 
         except Exception as e:
@@ -1968,6 +1977,53 @@ class ShowOCICSV(object):
         print('#' * chars)
 
     ##########################################################################
+    # create psm csv file
+    ##########################################################################
+    def __psm_to_csv_file(self, psm_name, psm_data, edition=None): 
+        # open a file for writing
+
+        file_dir = self.csv_file_header.rsplit("/", 1)[0]
+        file_name = f"{file_dir}/{psm_name}{('_'+edition) if edition else ''}.csv"
+        #file_data = open(file_name, 'a')
+
+        if psm_name == "integration":
+            print(f"psm_data = {psm_data}")
+
+        result = [dict(item) for item in psm_data]
+        
+        h_flag = os.path.isfile(file_name)     
+        if h_flag:
+            with open(file_name,'r') as fin:
+                dr = csv.DictReader(fin, delimiter=',')
+                fields = dr.fieldnames
+        else:
+            fields = [key for key in result[0].keys()]
+        with open(file_name, mode='a', newline='') as csv_file:
+            print(f"\nheader_exists = {h_flag}\n\nfields = {fields}")
+            writer = csv.DictWriter(csv_file, fieldnames=fields, extrasaction='ignore')
+            if not h_flag: writer.writeheader()
+            for row in result:
+                writer.writerow(row) 
+
+        print("CSV: " + psm_name.ljust(22) + " --> " + file_name)
+        """ # create the csv writer object
+        csvwriter = csv.writer(file_data)
+        count = 0
+
+        # generate fields
+        #fields = [instance for key in psm_data]
+        
+        h_flag = os.path.isfile(file_name)   
+        for instance in psm_data:
+            fields = instance.keys()
+            if count == 0 and not h_flag:
+                header = instance.keys()
+                csvwriter.writerow(header)
+                count += 1
+            csvwriter.writerow(instance.values())
+        file_data.close() """
+
+    ##########################################################################
     # create csv file
     ##########################################################################
     def __export_to_csv_file(self, file_subject, data):
@@ -1978,28 +2034,28 @@ class ShowOCICSV(object):
                 return
 
             # get the file name of the CSV
-            file_name = self.csv_file_header + "_" + file_subject + ".csv"
+            file_dir = self.csv_file_header.rsplit("/", 1)[0]
+            file_name = f"{file_dir}/{file_subject}.csv"
 
             # add start_date to each dictionary
-            result = [dict(item, extract_date=self.start_time) for item in data]
+            result = [dict(item, extract_date=self.start_time, tenancy=self.tenancy) for item in data]
 
             # generate fields
             fields = [key for key in result[0].keys()]
+            
+            print(f"file_subject={file_subject}\n", f"fields={fields}\n")
 
-            print(f"file_subject={file_subject}\n", f"fields={fields}\n", f"result={result[0]}\n")
-            self.generate_worksheet(file_subject, fields, result)
-
-            """ with open(file_name, mode='w', newline='') as csv_file:
+            h_flag = os.path.isfile(file_name)
+            with open(file_name, mode='a', newline='') as csv_file:
                 writer = csv.DictWriter(csv_file, fieldnames=fields)
 
-                # write header
-                writer.writeheader()
+                if not h_flag: writer.writeheader()
 
                 for row in result:
                     writer.writerow(row) 
 
-            print("CSV: " + file_subject.ljust(22) + " --> " + file_name)"""
-            print("XLSX Sheet: " + file_subject.ljust(22))
+            print("CSV: " + file_subject.ljust(22) + " --> " + file_name)
+            #print("XLSX Sheet: " + file_subject.ljust(22))
 
         except Exception as e:
             raise Exception("Error in __export_to_csv_file: " + str(e.args))

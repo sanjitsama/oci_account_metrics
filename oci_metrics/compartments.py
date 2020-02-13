@@ -28,7 +28,6 @@ class Compartments:
     def __init__(self, tenancy):
         self.config = tenancy.config
         self.identity = tenancy.identity
-        self.compute = tenancy.compute
         self.report_dir = tenancy.report_dir
         self.availability_domains = get_availability_domains(
             self.identity, self.config["tenancy"])
@@ -54,15 +53,15 @@ class Compartments:
         return [c.__dict__ for c in list(self.identity.list_compartments(
             comp_id, access_level="ANY").data) if c.__dict__["_lifecycle_state"] != "DELETED"]
 
-    @backoff.on_exception(backoff.expo, oci.exceptions.ServiceError)
+    """ @backoff.on_exception(backoff.expo, oci.exceptions.ServiceError)
     def get_instances(self, comp_id, ad):
         instances = [c.__dict__ for c in list(self.compute.list_instances(
             comp_id, availability_domain=ad, lifecycle_state="RUNNING").data)]
         instances = list(map(lambda curr: dict([(k, v) for (k, v) in curr.items(
         ) if (k != "metadata" and k != "attribute_map" and k != "swagger_types")]), instances))
-        self.instances.extend(instances)
+        self.instances.extend(instances) """
 
-    def get_compartment_tree(self, report_dir):
+    def generate_tree(self):
         self.compartment_tree.create_node(
             f"{self.config['tenancy_name']} (root)", self.config['tenancy'])
         for compartment in self.compartments:

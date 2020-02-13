@@ -8,6 +8,7 @@ import json
 import smtplib
 import email
 from operator import setitem
+import cx_Oracle
 from oci_metrics.compartments import Compartments
 from oci_metrics.instances import Instances
 from oci_metrics.report import Report
@@ -22,9 +23,9 @@ class TenancyMetrics(object):
         self.config = config
         self.name = self.config['tenancy_name']
         self.identity = oci.identity.IdentityClient(self.config)
-        self.compute = oci.core.ComputeClient(self.config)
         self.compartments = None
         self.instances = None
+        self.report = None
         self.report_dir = None
 
     """ def save_report(self):
@@ -46,18 +47,18 @@ def main():
     cmd = showoci.set_parser_arguments()
     parser = configparser.ConfigParser()
     parser.read(CONFIG_FILE)
-    """ sections =  dict([ (k, dict(v)) for k,v in list(config.items()) if k is not "DEFAULT"])
-    smtp = sections.pop("smtp") """
+    # sections =  dict([ (k, dict(v)) for k,v in list(config.items()) if k is not "DEFAULT"])
+    # smtp = sections.pop("smtp")
     config = dict(parser[cmd.profile])
-    smtp = dict(parser["smtp"])
     tenancy = TenancyMetrics(config)
     tenancy.report_dir = f"{base_dir}/{cmd.datetime}"
     print(f"Running OCI Metrics script on Tenancy {cmd.profile} ...\n")
     print("Step 1: Getting Compartment Structure...\n\n")
     tenancy.compartments = Compartments(tenancy)
     tenancy.compartments.get_all()
-    tenancy.compartments.get_compartment_tree(tenancy.report_dir)
+    tenancy.compartments.generate_tree()
     showoci.execute_extract(cmd, tenancy.report_dir)
+    
     """ for section in sections:
         
         tenancy = TenancyMetrics(section, sections[section])

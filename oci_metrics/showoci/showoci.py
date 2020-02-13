@@ -52,6 +52,7 @@
 # - oci.waas.WaasClient
 # - oci.dns.DnsClient
 #
+
 ##########################################################################
 from __future__ import print_function
 from .showoci_data import ShowOCIData
@@ -63,6 +64,7 @@ from .showoci_service import ShowOCIFlags
 import json
 import sys
 import argparse
+from dateutil import parser
 import datetime
 
 version = "19.11.19"
@@ -77,17 +79,19 @@ def execute_extract(cmd=None, report_dir=None):
     if cmd is None: cmd = set_parser_arguments()
     if cmd is None: return
 
+    #dt = str(parser.parse(str(cmd.datetime).split(" CST")[0])) + " CST"
+    dt = str(parser.parse(str(cmd.datetime)))
 
     # Start time
-    start_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    
+    #start_time = str(datetime.datetime.now().strftime("%Y-%m-%d"))
+    start_time = dt
     # get flags object for calling cache
     flags = set_service_extract_flags(cmd)
     #print(f"\n\nflags = \n{flags}\n\n")
     ############################################
     # create data instance
     ############################################
-    data = ShowOCIData(flags)
+    data = ShowOCIData(flags, dt, cmd.profile)
 
     ############################################
     # output and summary instances
@@ -128,6 +132,7 @@ def execute_extract(cmd=None, report_dir=None):
         ############################################
         output.print_header("Start Processing Data", 1)
         extracted_data = data.process_oci_data()
+        psm_data = data.process_psm_data()
 
         ############################################
         # if JSON and screen
@@ -177,8 +182,142 @@ def execute_extract(cmd=None, report_dir=None):
         # if print to CSV
         ############################################
         if cmd.csv:
-            csv.generate_csv(extracted_data, cmd.csv)
-            
+            #print(f"psm_data = \n{psm_data}")
+            print(f"psm_data.keys() = \n{psm_data.keys()}")
+            csv.generate_csv(extracted_data, psm_data, cmd.csv)
+
+    ############################################
+    # process psm data
+    ############################################      
+
+    
+
+    ############################################
+    # print completion
+    ############################################
+    complete_message = return_error_message(data.get_service_errors(), data.get_service_warnings(), data.error)
+
+    # if reboot migration
+    if data.get_service_reboot_migration() > 0:
+        output.print_header(str(data.get_service_reboot_migration()) + " Reboot Migration Alert for Compute", 0)
+
+    # print completion
+    output.print_header("Completed " + complete_message + " at " + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")), 0)
+
+def extract_psm(cmd=None, report_dir=None):
+    # get parset cmd
+    if cmd is None: cmd = set_parser_arguments()
+    if cmd is None: return
+
+    # Start time
+    start_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    
+    # get flags object for calling cache
+    flags = set_service_extract_flags(cmd)
+    #print(f"\n\nflags = \n{flags}\n\n")
+    ############################################
+    # create data instance
+    ############################################
+    data = ShowOCIData(flags)
+
+    ############################################
+    # output and summary instances
+    ############################################
+    output = ShowOCIOutput()
+    summary = ShowOCISummary()
+    csv = ShowOCICSV(start_time, cmd.profile, report_dir)
+
+    ############################################
+    # print showoci config
+    ############################################
+    cmdline = ' '.join(x for x in sys.argv[1:])
+    showoci_config = data.get_showoci_config(cmdline, start_time)
+    output.print_showoci_config(showoci_config['data'])
+
+    ############################################
+    # load oci data to cache
+    ############################################
+    output.print_header('Load PSM data to Memory', 1)
+
+    if not data.load_psm_service_data():
+        return
+
+    ############################################
+    # if print service data to file or screen
+    ############################################
+
+    if cmd.servicefile or cmd.servicescr:
+        if cmd.servicefile:
+            if cmd.servicefile.name:
+                print_to_json_file(cmd.servicefile.name, data.get_psm_service_data(), "Service Data")
+
+        elif cmd.servicescr:
+            print(json.dumps(data.get_psm_service_data(), indent=4, sort_keys=False))
+
+    else:
+        ############################################
+        # process the data into data json
+        ############################################
+        output.print_header("Start Processing Data", 1)
+        psm_data = data.process_psm_data()
+
+        ############################################
+        # if JSON and screen
+        ############################################
+        if cmd.sjoutfile:
+            # print nice
+            output.print_data(extracted_data)
+            summary.print_summary(extracted_data)
+
+            # Add summary to JSON and print to JSON file
+            extracted_data.append({'summary': summary.get_summary_json()})
+            if cmd.sjoutfile.name:
+                print_to_json_file(output, cmd.sjoutfile.name, extracted_data, "JSON Data")
+
+        ############################################
+        # JSON File only
+        ############################################
+        elif cmd.joutfile:
+            if cmd.joutfile.name:
+                summary.print_summary(extracted_data)
+                extracted_data.append({'summary': summary.get_summary_json()})
+                print_to_json_file(output, cmd.joutfile.name, extracted_data, "JSON Data")
+
+        ############################################
+        # JSON to screen only
+        ############################################
+        elif cmd.joutscr:
+            summary.print_summary(extracted_data)
+            extracted_data.append({'summary': summary.get_summary_json()})
+            print(json.dumps(extracted_data, indent=4, sort_keys=False))
+
+        ############################################
+        # print summary only
+        ############################################
+        elif cmd.sumonly:
+            summary.print_summary(extracted_data)
+
+        ############################################
+        # print nice output as default to screen
+        # and summary
+        ############################################
+        else:
+            output.print_data(extracted_data)
+            summary.print_summary(extracted_data)
+
+        ############################################
+        # if print to CSV
+        ############################################
+        if cmd.csv:
+            #print(f"psm_data = \n{psm_data}")
+            print(f"psm_data.keys() = \n{psm_data.keys()}")
+            csv.generate_csv(extracted_data, psm_data, cmd.csv)
+
+    ############################################
+    # process psm data
+    ############################################      
+
+    
 
     ############################################
     # print completion
