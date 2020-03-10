@@ -8,7 +8,7 @@ export REPORT_DIR=$HOME/oci_metrics/report_dir
 export NEW_REPORT=${REPORT_DIR}/${DATE}
 export CSV_DIR=${NEW_REPORT}/csv
 
-rm -rf ${REPORT_DIR}/*zip
+rm -rf ${REPORT_DIR}/*
 rm -rf ${NEW_REPORT}
 mkdir -p ${NEW_REPORT}
 mkdir -p ${CSV_DIR}
